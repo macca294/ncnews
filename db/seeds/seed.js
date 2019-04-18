@@ -1,5 +1,6 @@
-// const {  } = require('../data');
+const data = require('../data');
 
+console.log(data)
 exports.seed = (knex, Promise) => {
   return knex.migrate
     .rollback()
