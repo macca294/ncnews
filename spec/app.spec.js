@@ -1,6 +1,8 @@
 process.env.NODE_ENV = 'test';
 
-const { expect } = require('chai');
+const {
+  expect
+} = require('chai');
 const supertest = require('supertest');
 
 const app = require('../app');
@@ -17,9 +19,14 @@ describe('/', () => {
       return request
         .get('/api')
         .expect(200)
-        .then(({ body }) => {
+        .then(({
+          body
+        }) => {
           expect(body.ok).to.equal(true);
         });
     });
   });
+});
+describe('', () => {
+
 });
