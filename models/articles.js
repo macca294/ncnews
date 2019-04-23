@@ -1,14 +1,13 @@
 const connection = require("../db/connection");
 
-exports.selectAllTopics = () => {
-    return connection("topics")
+exports.selectAllArticles = () => {
+    return connection("articles")
         .returning('*')
         .then((
-            topicRows
-
+            articleRows
         ) => {
             return {
-                'topics': topicRows
+                'articles': articleRows
             }
         })
 }
