@@ -5,9 +5,10 @@ const {
   commentsData
 } = require('../data');
 const {
-  timeConverter,
   createRef,
-  formatDate
+  renameKey,
+  formatDate,
+  formatData
 } = require('../../utils/utils')
 
 
@@ -19,15 +20,24 @@ exports.seed = (knex, Promise) => {
       return knex('topics')
         .insert(topicsData)
         .returning('*')
-    }).then(() => {
+    }).then((topic) => {
       return knex('users')
         .insert(usersData)
         .returning('*')
     }).then(() => {
       const formattedArticles = formatDate(articlesData)
-      console.log(formattedArticles)
       return knex('articles')
         .insert(formattedArticles)
+        .returning('*')
+    }).then((articles) => {
+
+      const formattedCommentsDates = formatDate(commentsData)
+      const formattedCommentsAuthor = renameKey(formattedCommentsDates, 'created_by', 'author')
+      const refObj = createRef(articles, 'title', 'article_id')
+      const formattedComments = formatData(formattedCommentsAuthor, refObj)
+
+      return knex('comments')
+        .insert(formattedComments)
         .returning('*')
     })
 

@@ -10,7 +10,7 @@ exports.up = function (knex, Promise) {
         commentsTable.datetime('created_at', {
             precision: 6
         }).defaultTo(knex.fn.now(6))
-        commentsTable.string('body')
+        commentsTable.text('body')
 
     });
 };
