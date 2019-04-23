@@ -4,14 +4,14 @@ const {
 } = require('../errors');
 
 const topicsRouter = require("./topics");
-const usersRouter = require("./users");
-const articlesRouter = require("./articles");
-const commentsRouter = require("./comments")
+// const usersRouter = require("./users");
+// const articlesRouter = require("./articles");
+// const commentsRouter = require("./comments")
 
 apiRouter.use("/topics", topicsRouter);
-apiRouter.use("/users", usersRouter);
-apiRouter.use("/articles", articlesRouter);
-apiRouter.use("/comments", commentsRouter);
+// apiRouter.use("/users", usersRouter);
+// apiRouter.use("/articles", articlesRouter);
+// apiRouter.use("/comments", commentsRouter);
 
 
 apiRouter

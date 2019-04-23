@@ -4,7 +4,7 @@ const {
     deleteCommentsByCommentId
 } = require("../controllers/comments");
 
-topicsRouter.route("/:comment_id")
+commentsRouter.route("/:comment_id")
     .patch(patchCommentsByCommentId)
     .delete(deleteCommentsByCommentId)
 

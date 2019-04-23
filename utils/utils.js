@@ -41,7 +41,7 @@ const formatData = (arr, lookup) => {
     return arr.map((obj) => {
         const newObj = {};
         Object.keys(obj).forEach(key => {
-            if (key === 'belongs_to') newObj['article_id'] = lookup[obj.key];
+            if (key === 'belongs_to') newObj['article_id'] = lookup[obj[key]];
             else newObj[key] = obj[key];
         });
         return newObj

@@ -2,14 +2,13 @@ const {
     expect
 } = require('chai');
 const {
-    timeConverter,
     renameKey,
     formatDate,
     createRef,
     formatData
 } = require('../utils/utils')
 
-describe.only('formatDate', () => {
+describe('formatDate', () => {
     it('returns an empty array when passed an empty array', () => {
         const input = [];
         expect(formatDate(input)).to.eql([])
@@ -55,12 +54,8 @@ describe.only('formatDate', () => {
         expect(input).to.eql(copyInput)
     });
 });
-describe('createRef', () => {
-    it('given an empty', () => {
 
-    });
-});
-describe.only('renameKey', () => {
+describe('renameKey', () => {
     it('returns a new empty array, when passed an empty array', () => {
         const data = [];
         const keyToChange = '';
@@ -105,7 +100,7 @@ describe.only('renameKey', () => {
         }])
     });
 });
-describe.only('createRef', () => {
+describe('createRef', () => {
     it('returns an empty object, when passed an empty array', () => {
         const input = [];
         const actual = createRef(input);
@@ -150,7 +145,7 @@ describe.only('createRef', () => {
         expect(actual).to.eql(expected);
     });
 });
-describe.only('formatData', () => {
+describe('formatData', () => {
     it('given an empty array, returns empty array', () => {
         const testArr = [];
         const lookup = {};
