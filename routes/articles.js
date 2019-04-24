@@ -10,9 +10,9 @@ const {
 articlesRouter.route("/")
     .get(getAllArticles);
 
-// articlesRouter.route("/:id")
-//     .get(getArticlesById)
-//     .patch(patchArticlesById)
+articlesRouter.route("/:id")
+    .get(getArticlesById)
+    .patch(patchArticlesById)
 
 // articlesRouter.route("/:id/comments")
 //     .get(getCommentsByArticleId)
