@@ -47,3 +47,19 @@ exports.selectCommentsByArticleId = (id, {
         .orderBy(sort_by, order)
 
 }
+
+exports.insertCommentByArticleId = (post, id) => {
+
+    const formattedPost = {};
+    formattedPost.author = post.username,
+        formattedPost.body = post.body,
+        formattedPost.article_id = id
+
+    return connection("comments")
+        .where("comments.article_id", id)
+        .insert(formattedPost)
+        .returning('*')
+        .then(comment => comment[0])
+
+
+}

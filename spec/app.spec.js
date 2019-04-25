@@ -312,18 +312,31 @@ describe.only('/', () => {
         });
     });
     it('POST Status:201,  allows for a new comment to be added, by article_id', () => {
-      
+      return request
+        .post("/api/articles/5/comments")
+        .send({
+          username: 'butter_bridge',
+          body: 'test comment...'
+        })
+        .expect(201)
+        .then(({
+          body
+        }) => {
+          expect(body.comment.author).to.eql('butter_bridge')
+          expect(body.comment.body).to.eql('test comment...')
+          expect(body.comment.article_id).to.eql(5)
+        })
 
-    });
-    describe('/articles errors', () => {
-      it('404: article not found when given a non-existant author query', () => {
-        return request
-          .get("/api/articles?author=banana")
-          .expect(404)
-          .then(res => {
-            expect(res.body.msg).that.equal('Article not found')
-          })
-      });
+    })
+  });
+  describe('/articles errors', () => {
+    it('404: article not found when given a non-existant author query', () => {
+      return request
+        .get("/api/articles?author=banana")
+        .expect(404)
+        .then(res => {
+          expect(res.body.msg).that.equal('Article not found')
+        })
     });
   });
 });
