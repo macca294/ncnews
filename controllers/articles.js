@@ -8,7 +8,10 @@ const {
 
 
 exports.getAllArticles = (req, res, next) => {
-    selectAllArticles(req.query)
+    if ((req.query.order && req.query.order !== 'asc') || (req.query.order && req.query.order !== 'desc')) next({
+        code: 400
+    })
+    else selectAllArticles(req.query)
         .then((
             articles
         ) => {
@@ -30,8 +33,14 @@ exports.getArticlesById = (req, res, next) => {
     const {
         id
     } = req.params;
+
     selectArticlesById(id)
         .then((articles) => {
+            if (articles.length === 0)
+                return Promise.reject({
+                    code: 404,
+                    msg: 'article_id does not exist'
+                });
             res.status(200).send({
                 'articles': articles
             })
@@ -43,8 +52,11 @@ exports.patchArticlesById = (req, res, next) => {
     const {
         id
     } = req.params;
-
-    updateArticlesById(req.body, id)
+    if (!req.body.inc_votes) next({
+        code: 404,
+        msg: "Bad request"
+    })
+    else updateArticlesById(req.body, id)
         .then((article) => {
             res.status(200).send({
 

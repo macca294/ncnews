@@ -15,7 +15,7 @@ use(chaiSorted);
 beforeEach(() => connection.seed.run());
 after(() => connection.destroy());
 
-describe.only('/', () => {
+describe('/', () => {
   describe('/api', () => {
     it('GET status:200', () => {
       return request
@@ -259,78 +259,78 @@ describe.only('/', () => {
             })
           })
       })
-    });
-    it('GET status:200, allows order_by query defaulting to desc', () => {
-      return request
-        .get("/api/articles/5/comments?sort_by=author")
-        .expect(200)
-        .then(({
-          body
-        }) => {
-          expect(body).to.eql({
-            Comments: [{
-              comment_id: 14,
-              author: 'icellusedkars',
-              article_id: 5,
-              votes: 16,
-              created_at: '2004-11-25T12:36:03.389Z',
-              body: 'What do you see? I have no idea where this will lead us. This place I speak of, is known as the Black Lodge.'
-            }, {
-              comment_id: 15,
-              author: 'butter_bridge',
-              article_id: 5,
-              votes: 1,
-              created_at: '2003-11-26T12:36:03.389Z',
-              body: "I am 100% sure that we're not completely sure."
-            }]
-          })
-        }).then(() => {
-          return request
-            .get("/api/articles/5/comments?sort_by=votes&order=asc")
-            .expect(200)
-            .then(({
-              body
-            }) => {
-              expect(body).to.eql({
-                Comments: [{
-                  comment_id: 15,
-                  author: 'butter_bridge',
-                  article_id: 5,
-                  votes: 1,
-                  created_at: '2003-11-26T12:36:03.389Z',
-                  body: "I am 100% sure that we're not completely sure."
-                }, {
-                  comment_id: 14,
-                  author: 'icellusedkars',
-                  article_id: 5,
-                  votes: 16,
-                  created_at: '2004-11-25T12:36:03.389Z',
-                  body: 'What do you see? I have no idea where this will lead us. This place I speak of, is known as the Black Lodge.'
-                }]
-              })
+      it('GET status:200, allows order_by query defaulting to desc', () => {
+        return request
+          .get("/api/articles/5/comments?sort_by=author")
+          .expect(200)
+          .then(({
+            body
+          }) => {
+            expect(body).to.eql({
+              Comments: [{
+                comment_id: 14,
+                author: 'icellusedkars',
+                article_id: 5,
+                votes: 16,
+                created_at: '2004-11-25T12:36:03.389Z',
+                body: 'What do you see? I have no idea where this will lead us. This place I speak of, is known as the Black Lodge.'
+              }, {
+                comment_id: 15,
+                author: 'butter_bridge',
+                article_id: 5,
+                votes: 1,
+                created_at: '2003-11-26T12:36:03.389Z',
+                body: "I am 100% sure that we're not completely sure."
+              }]
             })
-        });
-    });
-    it('POST Status:201,  allows for a new comment to be added, by article_id', () => {
-      return request
-        .post("/api/articles/5/comments")
-        .send({
-          username: 'butter_bridge',
-          body: 'test comment...'
-        })
-        .expect(201)
-        .then(({
-          body
-        }) => {
-          expect(body.comment.author).to.eql('butter_bridge')
-          expect(body.comment.body).to.eql('test comment...')
-          expect(body.comment.article_id).to.eql(5)
-        })
+          }).then(() => {
+            return request
+              .get("/api/articles/5/comments?sort_by=votes&order=asc")
+              .expect(200)
+              .then(({
+                body
+              }) => {
+                expect(body).to.eql({
+                  Comments: [{
+                    comment_id: 15,
+                    author: 'butter_bridge',
+                    article_id: 5,
+                    votes: 1,
+                    created_at: '2003-11-26T12:36:03.389Z',
+                    body: "I am 100% sure that we're not completely sure."
+                  }, {
+                    comment_id: 14,
+                    author: 'icellusedkars',
+                    article_id: 5,
+                    votes: 16,
+                    created_at: '2004-11-25T12:36:03.389Z',
+                    body: 'What do you see? I have no idea where this will lead us. This place I speak of, is known as the Black Lodge.'
+                  }]
+                })
+              })
+          });
 
-    })
+      });
+      it('POST Status:201,  allows for a new comment to be added, by article_id', () => {
+        return request
+          .post("/api/articles/5/comments")
+          .send({
+            username: 'butter_bridge',
+            body: 'test comment...'
+          })
+          .expect(201)
+          .then(({
+            body
+          }) => {
+            expect(body.comment.author).to.eql('butter_bridge')
+            expect(body.comment.body).to.eql('test comment...')
+            expect(body.comment.article_id).to.eql(5)
+          })
+      })
+    });
   });
   describe('/articles errors', () => {
-    it('404: article not found when given a non-existant author query', () => {
+    it.only('404: article not found when given a non-existant author query', () => {
       return request
         .get("/api/articles?author=banana")
         .expect(404)
@@ -338,5 +338,46 @@ describe.only('/', () => {
           expect(res.body.msg).that.equal('Article not found')
         })
     });
+    it.only('400 - BAD REQUEST: Responds with status 400 when given an invalid column to sort_by', () => {
+      return request.get('/api/articles?sort_by=banana').expect(400).then(({
+        body
+      }) => {
+        expect(body.msg).to.equal('Bad query')
+      })
+    });
+    it.only('400 - BAD REQUEST: Responds with status 400 when given an invalid order input', () => {
+      return request.get('/api/articles?order=banana').expect(400).then(({
+        body
+      }) => {
+        expect(body.msg).to.equal('Bad request')
+      })
+    });
+    it.only('400 - BAD REQUEST: Responds with status 400 when given an invalid article Id', () => {
+      return request.get('/api/articles/banana').expect(400).then(({
+        body
+      }) => {
+        expect(body.msg).to.equal('Bad request')
+      })
+    });
+    it.only('404 - article_id not found: Responds with status 404 when given article Id number that doesnt exist', () => {
+      return request.get('/api/articles/99999').expect(404).then(({
+        body
+      }) => {
+        expect(body.msg).to.equal('article_id does not exist')
+      })
+    });
+    it.only('400 - PATCH - BAD REQUEST: Responds with status 400 when patch request doesnt have an inc_votes value', () => {
+      return request
+        .patch('/api/articles/5')
+        .send({
+          banana: 1
+        })
+        .expect(404).then(({
+          body
+        }) => {
+          expect(body.msg).to.equal('Bad request')
+        })
+    });
+
   });
 });

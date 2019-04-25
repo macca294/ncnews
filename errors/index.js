@@ -11,8 +11,15 @@ exports.methodNotAllowed = (req, res) => {
 };
 
 exports.handle400 = (err, req, res, next) => {
-  const codes = ['42703']
-  if (codes.includes(err.code)) res.status(400)
+  const codes = {
+    '42703': 'Bad query',
+    400: 'Bad request',
+    '22P02': 'Bad request'
+  }
+  if (codes[err.code]) res.status(400).send({
+    msg: codes[err.code]
+  })
+  else next(err);
 }
 
 exports.handle404 = (err, req, res, next) => {
@@ -25,7 +32,6 @@ exports.handle404 = (err, req, res, next) => {
 exports.handle500 = (err, req, res, next) => {
   console.log(err)
   res.status(500).send({
-
     msg: 'Internal Server Error'
   });
 };

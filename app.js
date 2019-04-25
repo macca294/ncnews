@@ -2,6 +2,7 @@ const express = require('express');
 const apiRouter = require('./routes/api');
 const {
     routeNotFound,
+    handle400,
     handle404,
     handle500
 } = require('./errors');
@@ -14,6 +15,7 @@ app.use('/api', apiRouter);
 
 app.all('/*', routeNotFound);
 
+app.use(handle400);
 app.use(handle404);
 app.use(handle500);
 
