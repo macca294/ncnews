@@ -35,3 +35,15 @@ exports.updateArticlesById = (update, id) => {
         .returning("*")
         .then(article => article[0])
 }
+
+exports.selectCommentsByArticleId = (id, {
+    sort_by = 'comments.created_at',
+    order = 'desc'
+}) => {
+
+    return connection("comments")
+        .where("comments.article_id", "=", id)
+        .returning('*')
+        .orderBy(sort_by, order)
+
+}

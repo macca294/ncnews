@@ -179,16 +179,142 @@ describe.only('/', () => {
                 created_at: '1974-11-26T12:21:54.171Z'
               }
             }))
-      });
-    });
-    describe('/api/articles/:article_id/comments', () => {
-      it('GET status:200, responds with array of comments for given article_id ', () => {
-        return request
-          .get("/api/articles/12/comments")
-          .expect(200)
+          .then(() => {
+            return request
+              .patch("/api/articles/12")
+              .send({
+                inc_votes: -1
+              })
+              .expect(200)
+              .then(({
+                  body
+                }) =>
+                expect(body).to.eql({
+                  'Article updated': {
+                    article_id: 12,
+                    title: 'Moustache',
+                    body: 'Have you seen the size of that thing?',
+                    votes: 0,
+                    topic: 'mitch',
+                    author: 'butter_bridge',
+                    created_at: '1974-11-26T12:21:54.171Z'
+                  }
+                }))
+          })
       });
     });
 
+    describe('/api/articles/:article_id/comments', () => {
+      it('GET status:200, responds with array of comments for given article_id ', () => {
+        return request
+          .get("/api/articles/5/comments")
+          .expect(200)
+          .then(({
+            body
+          }) => {
+            expect(body).to.eql({
+              Comments: [{
+                  comment_id: 14,
+                  author: 'icellusedkars',
+                  article_id: 5,
+                  votes: 16,
+                  created_at: '2004-11-25T12:36:03.389Z',
+                  body: 'What do you see? I have no idea where this will lead us. This place I speak of, is known as the Black Lodge.'
+                }, {
+                  comment_id: 15,
+                  author: 'butter_bridge',
+                  article_id: 5,
+                  votes: 1,
+                  created_at: '2003-11-26T12:36:03.389Z',
+                  body: "I am 100% sure that we're not completely sure."
+                }
+
+              ]
+            })
+          })
+      });
+      it('GET status:200, allows sort_by query defaulting to created_at', () => {
+        return request
+          .get("/api/articles/5/comments?sort_by=author")
+          .expect(200)
+          .then(({
+            body
+          }) => {
+            expect(body).to.eql({
+              Comments: [{
+                comment_id: 14,
+                author: 'icellusedkars',
+                article_id: 5,
+                votes: 16,
+                created_at: '2004-11-25T12:36:03.389Z',
+                body: 'What do you see? I have no idea where this will lead us. This place I speak of, is known as the Black Lodge.'
+              }, {
+                comment_id: 15,
+                author: 'butter_bridge',
+                article_id: 5,
+                votes: 1,
+                created_at: '2003-11-26T12:36:03.389Z',
+                body: "I am 100% sure that we're not completely sure."
+              }]
+            })
+          })
+      })
+    });
+    it('GET status:200, allows order_by query defaulting to desc', () => {
+      return request
+        .get("/api/articles/5/comments?sort_by=author")
+        .expect(200)
+        .then(({
+          body
+        }) => {
+          expect(body).to.eql({
+            Comments: [{
+              comment_id: 14,
+              author: 'icellusedkars',
+              article_id: 5,
+              votes: 16,
+              created_at: '2004-11-25T12:36:03.389Z',
+              body: 'What do you see? I have no idea where this will lead us. This place I speak of, is known as the Black Lodge.'
+            }, {
+              comment_id: 15,
+              author: 'butter_bridge',
+              article_id: 5,
+              votes: 1,
+              created_at: '2003-11-26T12:36:03.389Z',
+              body: "I am 100% sure that we're not completely sure."
+            }]
+          })
+        }).then(() => {
+          return request
+            .get("/api/articles/5/comments?sort_by=votes&order=asc")
+            .expect(200)
+            .then(({
+              body
+            }) => {
+              expect(body).to.eql({
+                Comments: [{
+                  comment_id: 15,
+                  author: 'butter_bridge',
+                  article_id: 5,
+                  votes: 1,
+                  created_at: '2003-11-26T12:36:03.389Z',
+                  body: "I am 100% sure that we're not completely sure."
+                }, {
+                  comment_id: 14,
+                  author: 'icellusedkars',
+                  article_id: 5,
+                  votes: 16,
+                  created_at: '2004-11-25T12:36:03.389Z',
+                  body: 'What do you see? I have no idea where this will lead us. This place I speak of, is known as the Black Lodge.'
+                }]
+              })
+            })
+        });
+    });
+    it('POST Status:201,  allows for a new comment to be added, by article_id', () => {
+      
+
+    });
     describe('/articles errors', () => {
       it('404: article not found when given a non-existant author query', () => {
         return request
