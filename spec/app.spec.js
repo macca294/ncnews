@@ -138,12 +138,57 @@ describe.only('/', () => {
         });
     });
     describe('/api/articles/:id', () => {
-      it('GET status:200,  returns array of article objects for specified user', () => {
+      it('GET status:200,  returns article objects for specified user', () => {
         return request
-          .get("/api/articles/2")
+          .get("/api/articles/12")
+          .expect(200)
+          .then(({
+            body
+          }) => {
+            expect(body.articles[0]).to.eql({
+              article_id: 12,
+              title: 'Moustache',
+              body: 'Have you seen the size of that thing?',
+              comment_count: "0",
+              votes: 0,
+              topic: 'mitch',
+              author: 'butter_bridge',
+              created_at: '1974-11-26T12:21:54.171Z'
+            })
+            expect(body.articles.length).to.eql(1)
+          });
+      });
+      it('PATCH status:200, allows update of article votes', () => {
+        return request
+          .patch("/api/articles/12")
+          .send({
+            inc_votes: 1
+          })
+          .expect(200)
+          .then(({
+              body
+            }) =>
+            expect(body).to.eql({
+              'Article updated': {
+                article_id: 12,
+                title: 'Moustache',
+                body: 'Have you seen the size of that thing?',
+                votes: 1,
+                topic: 'mitch',
+                author: 'butter_bridge',
+                created_at: '1974-11-26T12:21:54.171Z'
+              }
+            }))
+      });
+    });
+    describe('/api/articles/:article_id/comments', () => {
+      it('GET status:200, responds with array of comments for given article_id ', () => {
+        return request
+          .get("/api/articles/12/comments")
           .expect(200)
       });
     });
+
     describe('/articles errors', () => {
       it('404: article not found when given a non-existant author query', () => {
         return request
