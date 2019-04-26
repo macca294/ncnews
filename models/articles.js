@@ -33,7 +33,7 @@ exports.updateArticlesById = (update, id) => {
         .where("articles.article_id", "=", id)
         .increment('votes', increment)
         .returning("*")
-        .then(article => article[0])
+        .then(article => article)
 }
 
 exports.selectCommentsByArticleId = (id, {
@@ -59,7 +59,7 @@ exports.insertCommentByArticleId = (post, id) => {
         .where("comments.article_id", id)
         .insert(formattedPost)
         .returning('*')
-        .then(comment => comment[0])
+        .then(comment => comment)
 
 
 }

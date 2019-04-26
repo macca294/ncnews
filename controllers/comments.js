@@ -10,9 +10,11 @@ exports.patchCommentsByCommentId = (req, res, next) => {
     } = req.params
 
     updateCommentsByCommentId(req.body, comment_id)
-        .then(comment => {
+        .then(([comment]) => {
             res.status(200)
-                .send(comment)
+                .send({
+                    comment: comment
+                })
         }).catch(next)
 
 }
@@ -23,9 +25,11 @@ exports.removeCommentsByCommentId = (req, res, next) => {
     } = req.params
 
     deleteCommentsByCommentId(comment_id)
-        .then(emptyBody => {
+        .then(([emptyBody]) => {
             res.status(204)
-                .send(emptyBody)
+                .send({
+                    comment: emptyBody
+                })
         }).catch(next)
 
 }

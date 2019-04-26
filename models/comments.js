@@ -7,7 +7,7 @@ exports.updateCommentsByCommentId = (update, id) => {
         .where("comments.comment_id", "=", id)
         .increment('votes', increment)
         .returning("*")
-        .then(comment => comment[0])
+        .then(comment => comment)
 
 }
 
@@ -16,6 +16,6 @@ exports.deleteCommentsByCommentId = (id) => {
         .where("comments.comment_id", "=", id)
         .del()
         .returning("*")
-        .then(body => body[0])
+        .then(body => body)
 
 }

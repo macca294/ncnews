@@ -32,14 +32,14 @@ exports.getArticlesById = (req, res, next) => {
     } = req.params;
 
     selectArticlesById(id)
-        .then((articles) => {
-            if (articles.length === 0)
+        .then(([article]) => {
+            if (article === undefined)
                 return Promise.reject({
                     code: 404,
                     msg: 'article_id does not exist'
                 });
             res.status(200).send({
-                'articles': articles
+                'article': article
             })
         }).catch(next);
 
@@ -51,10 +51,10 @@ exports.patchArticlesById = (req, res, next) => {
     } = req.params;
 
     updateArticlesById(req.body, id)
-        .then((article) => {
+        .then(([article]) => {
             res.status(200).send({
 
-                'Article updated': article
+                'article': article
             })
         }).catch(next);
 }
@@ -65,9 +65,9 @@ exports.getCommentsByArticleId = (req, res, next) => {
     } = req.params;
 
     selectCommentsByArticleId(id, req.query)
-        .then((comments) => {
+        .then(([...comments]) => {
             res.status(200).send({
-                'Comments': comments
+                'comments': [...comments]
             })
         }).catch(next);
 
@@ -80,7 +80,7 @@ exports.postCommentByArticleId = (req, res, next) => {
     } = req.params
 
     insertCommentByArticleId(req.body, id)
-        .then((comment) => {
+        .then(([comment]) => {
             res.status(201).send({
                 'comment': comment
             })

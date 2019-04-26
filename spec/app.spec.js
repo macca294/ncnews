@@ -137,15 +137,16 @@ describe.only('/', () => {
           expect(body.articles[body.articles.length - 1].title).to.eql('Living in the shadow of a great man');
         });
     });
-    describe('/api/articles/:article_id', () => {
+    describe.only('/api/articles/:article_id', () => {
       it('GET status:200,  returns article objects for specified user', () => {
         return request
           .get("/api/articles/12")
           .expect(200)
           .then(({
+
             body
           }) => {
-            expect(body.articles[0]).to.eql({
+            expect(body.article).to.eql({
               article_id: 12,
               title: 'Moustache',
               body: 'Have you seen the size of that thing?',
@@ -154,8 +155,7 @@ describe.only('/', () => {
               topic: 'mitch',
               author: 'butter_bridge',
               created_at: '1974-11-26T12:21:54.171Z'
-            })
-            expect(body.articles.length).to.eql(1)
+            });
           });
       });
       it('PATCH status:200, allows update of article votes', () => {
@@ -168,16 +168,14 @@ describe.only('/', () => {
           .then(({
               body
             }) =>
-            expect(body).to.eql({
-              'Article updated': {
-                article_id: 12,
-                title: 'Moustache',
-                body: 'Have you seen the size of that thing?',
-                votes: 1,
-                topic: 'mitch',
-                author: 'butter_bridge',
-                created_at: '1974-11-26T12:21:54.171Z'
-              }
+            expect(body.article).to.eql({
+              article_id: 12,
+              title: 'Moustache',
+              body: 'Have you seen the size of that thing?',
+              votes: 1,
+              topic: 'mitch',
+              author: 'butter_bridge',
+              created_at: '1974-11-26T12:21:54.171Z'
             }))
           .then(() => {
             return request
@@ -189,22 +187,20 @@ describe.only('/', () => {
               .then(({
                   body
                 }) =>
-                expect(body).to.eql({
-                  'Article updated': {
-                    article_id: 12,
-                    title: 'Moustache',
-                    body: 'Have you seen the size of that thing?',
-                    votes: 0,
-                    topic: 'mitch',
-                    author: 'butter_bridge',
-                    created_at: '1974-11-26T12:21:54.171Z'
-                  }
+                expect(body.article).to.eql({
+                  article_id: 12,
+                  title: 'Moustache',
+                  body: 'Have you seen the size of that thing?',
+                  votes: 0,
+                  topic: 'mitch',
+                  author: 'butter_bridge',
+                  created_at: '1974-11-26T12:21:54.171Z'
                 }))
           })
       });
     });
 
-    describe('/api/articles/:article_id/comments', () => {
+    describe.only('/api/articles/:article_id/comments', () => {
       it('GET status:200, responds with array of comments for given article_id ', () => {
         return request
           .get("/api/articles/5/comments")
@@ -212,8 +208,8 @@ describe.only('/', () => {
           .then(({
             body
           }) => {
-            expect(body).to.eql({
-              Comments: [{
+            expect(body.comments).to.eql(
+              [{
                   comment_id: 14,
                   author: 'icellusedkars',
                   article_id: 5,
@@ -230,7 +226,7 @@ describe.only('/', () => {
                 }
 
               ]
-            })
+            )
           })
       });
       it('GET status:200, allows sort_by query defaulting to created_at', () => {
@@ -240,8 +236,8 @@ describe.only('/', () => {
           .then(({
             body
           }) => {
-            expect(body).to.eql({
-              Comments: [{
+            expect(body.comments).to.eql(
+              [{
                 comment_id: 14,
                 author: 'icellusedkars',
                 article_id: 5,
@@ -256,7 +252,7 @@ describe.only('/', () => {
                 created_at: '2003-11-26T12:36:03.389Z',
                 body: "I am 100% sure that we're not completely sure."
               }]
-            })
+            )
           })
       })
       it('GET status:200, allows order_by query defaulting to desc', () => {
@@ -266,8 +262,8 @@ describe.only('/', () => {
           .then(({
             body
           }) => {
-            expect(body).to.eql({
-              Comments: [{
+            expect(body.comments).to.eql(
+              [{
                 comment_id: 14,
                 author: 'icellusedkars',
                 article_id: 5,
@@ -282,7 +278,7 @@ describe.only('/', () => {
                 created_at: '2003-11-26T12:36:03.389Z',
                 body: "I am 100% sure that we're not completely sure."
               }]
-            })
+            )
           }).then(() => {
             return request
               .get("/api/articles/5/comments?sort_by=votes&order=asc")
@@ -290,8 +286,8 @@ describe.only('/', () => {
               .then(({
                 body
               }) => {
-                expect(body).to.eql({
-                  Comments: [{
+                expect(body.comments).to.eql(
+                  [{
                     comment_id: 15,
                     author: 'butter_bridge',
                     article_id: 5,
@@ -306,7 +302,7 @@ describe.only('/', () => {
                     created_at: '2004-11-25T12:36:03.389Z',
                     body: 'What do you see? I have no idea where this will lead us. This place I speak of, is known as the Black Lodge.'
                   }]
-                })
+                )
               })
           });
 
@@ -380,7 +376,7 @@ describe.only('/', () => {
     });
 
   });
-  describe('/comments/:comment_id ', () => {
+  describe.only('/comments/:comment_id ', () => {
     it('PATCH status:200 - allows votes update on comment_id', () => {
       return request
         .patch("/api/comments/5")
@@ -391,7 +387,7 @@ describe.only('/', () => {
         .then(({
           body
         }) => {
-          expect(body).to.eql({
+          expect(body.comment).to.eql({
             comment_id: 5,
             author: 'icellusedkars',
             article_id: 1,
@@ -409,7 +405,7 @@ describe.only('/', () => {
             .then(({
               body
             }) => {
-              expect(body).to.eql({
+              expect(body.comment).to.eql({
                 comment_id: 5,
                 author: 'icellusedkars',
                 article_id: 1,
@@ -432,7 +428,7 @@ describe.only('/', () => {
         })
     });
   });
-  describe('/api/users/:username', () => {
+  describe.only('/api/users/:username', () => {
     it('GET status:200 - responds with user info for given username', () => {
       return request
         .get("/api/users/icellusedkars")
@@ -440,7 +436,7 @@ describe.only('/', () => {
         .then(({
           body
         }) => {
-          expect(body).to.eql({
+          expect(body.user).to.eql({
             username: 'icellusedkars',
             avatar_url: 'https://avatars2.githubusercontent.com/u/24604688?s=460&v=4',
             name: 'sam'

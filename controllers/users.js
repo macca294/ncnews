@@ -9,10 +9,12 @@ exports.getUserByUsername = (req, res, next) => {
 
 
     selectUserByUsername(username)
-        .then((user) => {
+        .then(([user]) => {
 
             res.status(200)
-                .send(user[0])
+                .send({
+                    'user': user
+                })
         })
 
         .catch(next)
