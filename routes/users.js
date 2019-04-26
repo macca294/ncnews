@@ -4,6 +4,7 @@ const {
 } = require("../controllers/users");
 
 usersRouter.route("/:username")
-    .get(getUserByUsername);
+    .get(getUserByUsername)
+    .all(methodNotAllowed)
 
 module.exports = usersRouter;

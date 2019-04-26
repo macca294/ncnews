@@ -7,5 +7,6 @@ const {
 commentsRouter.route("/:comment_id")
     .patch(patchCommentsByCommentId)
     .delete(removeCommentsByCommentId)
+    .all(methodNotAllowed)
 
 module.exports = commentsRouter;

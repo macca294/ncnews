@@ -8,14 +8,17 @@ const {
 } = require("../controllers/articles");
 
 articlesRouter.route("/")
-    .get(getAllArticles);
+    .get(getAllArticles)
+    .all(methodNotAllowed)
 
 articlesRouter.route("/:id")
     .get(getArticlesById)
     .patch(patchArticlesById)
+    .all(methodNotAllowed)
 
 articlesRouter.route("/:id/comments")
     .get(getCommentsByArticleId)
     .post(postCommentByArticleId)
+    .all(methodNotAllowed)
 
 module.exports = articlesRouter;

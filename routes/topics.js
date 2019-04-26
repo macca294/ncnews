@@ -4,6 +4,7 @@ const {
 } = require("../controllers/topics");
 
 topicsRouter.route("/")
-    .get(getAllTopics);
+    .get(getAllTopics)
+    .all(methodNotAllowed)
 
 module.exports = topicsRouter;

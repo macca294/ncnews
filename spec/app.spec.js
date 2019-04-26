@@ -137,7 +137,7 @@ describe.only('/', () => {
           expect(body.articles[body.articles.length - 1].title).to.eql('Living in the shadow of a great man');
         });
     });
-    describe.only('/api/articles/:article_id', () => {
+    describe('/api/articles/:article_id', () => {
       it('GET status:200,  returns article objects for specified user', () => {
         return request
           .get("/api/articles/12")
@@ -200,7 +200,7 @@ describe.only('/', () => {
       });
     });
 
-    describe.only('/api/articles/:article_id/comments', () => {
+    describe('/api/articles/:article_id/comments', () => {
       it('GET status:200, responds with array of comments for given article_id ', () => {
         return request
           .get("/api/articles/5/comments")
@@ -376,7 +376,7 @@ describe.only('/', () => {
     });
 
   });
-  describe.only('/comments/:comment_id ', () => {
+  describe('/comments/:comment_id ', () => {
     it('PATCH status:200 - allows votes update on comment_id', () => {
       return request
         .patch("/api/comments/5")
@@ -428,7 +428,7 @@ describe.only('/', () => {
         })
     });
   });
-  describe.only('/api/users/:username', () => {
+  describe('/api/users/:username', () => {
     it('GET status:200 - responds with user info for given username', () => {
       return request
         .get("/api/users/icellusedkars")
