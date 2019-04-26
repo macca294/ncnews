@@ -1,7 +1,9 @@
 const topicsRouter = require("express").Router();
 const {
-    getAllTopics
+    getAllTopics,
+    
 } = require("../controllers/topics");
+const {methodNotAllowed} = require('../errors/index') 
 
 topicsRouter.route("/")
     .get(getAllTopics)

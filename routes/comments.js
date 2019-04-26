@@ -1,8 +1,10 @@
 const commentsRouter = require("express").Router();
 const {
     patchCommentsByCommentId,
-    removeCommentsByCommentId
+    removeCommentsByCommentId,
+    
 } = require("../controllers/comments");
+const {methodNotAllowed} = require('../errors/index') 
 
 commentsRouter.route("/:comment_id")
     .patch(patchCommentsByCommentId)

@@ -4,8 +4,11 @@ const {
     getArticlesById,
     getCommentsByArticleId,
     postCommentByArticleId,
-    patchArticlesById
+    patchArticlesById,
+    
 } = require("../controllers/articles");
+
+const {methodNotAllowed} = require('../errors/index') 
 
 articlesRouter.route("/")
     .get(getAllArticles)
