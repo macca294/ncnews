@@ -5,13 +5,13 @@ const {
 
 const topicsRouter = require("./topics");
 const articlesRouter = require("./articles");
-// const usersRouter = require("./users");
-// const commentsRouter = require("./comments")
+const usersRouter = require("./users");
+const commentsRouter = require("./comments")
 
 apiRouter.use("/topics", topicsRouter);
 apiRouter.use("/articles", articlesRouter);
-// apiRouter.use("/users", usersRouter);
-// apiRouter.use("/comments", commentsRouter);
+apiRouter.use("/users", usersRouter);
+apiRouter.use("/comments", commentsRouter);
 
 
 apiRouter

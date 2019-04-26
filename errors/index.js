@@ -1,16 +1,18 @@
-exports.routeNotFound = (req, res) => {
+exports.routeNotFound = (err, req, res, next) => {
+  console.log(err)
   res.status(404).send({
     msg: 'Route Not Found'
   });
 };
 
-exports.methodNotAllowed = (req, res) => {
+exports.methodNotAllowed = (err, req, res, next) => {
   res.status(405).send({
     msg: 'Method Not Allowed'
   });
 };
 
 exports.handle400 = (err, req, res, next) => {
+
   const codes = {
     '42703': 'Bad query',
     400: 'Bad request',
@@ -23,6 +25,7 @@ exports.handle400 = (err, req, res, next) => {
 }
 
 exports.handle404 = (err, req, res, next) => {
+  console.log(err)
   if (err.code === 404) res.status(404).send({
     msg: err.msg || 'Not Found'
   })
@@ -30,7 +33,7 @@ exports.handle404 = (err, req, res, next) => {
 }
 
 exports.handle500 = (err, req, res, next) => {
-  console.log(err)
+  // console.log(err)
   res.status(500).send({
     msg: 'Internal Server Error'
   });

@@ -15,7 +15,7 @@ use(chaiSorted);
 beforeEach(() => connection.seed.run());
 after(() => connection.destroy());
 
-describe('/', () => {
+describe.only('/', () => {
   describe('/api', () => {
     it('GET status:200', () => {
       return request
@@ -137,7 +137,7 @@ describe('/', () => {
           expect(body.articles[body.articles.length - 1].title).to.eql('Living in the shadow of a great man');
         });
     });
-    describe('/api/articles/:id', () => {
+    describe('/api/articles/:article_id', () => {
       it('GET status:200,  returns article objects for specified user', () => {
         return request
           .get("/api/articles/12")
@@ -330,7 +330,7 @@ describe('/', () => {
     });
   });
   describe('/articles errors', () => {
-    it.only('404: article not found when given a non-existant author query', () => {
+    it('404: article not found when given a non-existant author query', () => {
       return request
         .get("/api/articles?author=banana")
         .expect(404)
@@ -338,35 +338,35 @@ describe('/', () => {
           expect(res.body.msg).that.equal('Article not found')
         })
     });
-    it.only('400 - BAD REQUEST: Responds with status 400 when given an invalid column to sort_by', () => {
+    it('400 - BAD REQUEST: Responds with status 400 when given an invalid column to sort_by', () => {
       return request.get('/api/articles?sort_by=banana').expect(400).then(({
         body
       }) => {
         expect(body.msg).to.equal('Bad query')
       })
     });
-    it.only('400 - BAD REQUEST: Responds with status 400 when given an invalid order input', () => {
+    it('400 - BAD REQUEST: Responds with status 400 when given an invalid order input', () => {
       return request.get('/api/articles?order=banana').expect(400).then(({
         body
       }) => {
         expect(body.msg).to.equal('Bad request')
       })
     });
-    it.only('400 - BAD REQUEST: Responds with status 400 when given an invalid article Id', () => {
+    it('400 - BAD REQUEST: Responds with status 400 when given an invalid article Id', () => {
       return request.get('/api/articles/banana').expect(400).then(({
         body
       }) => {
         expect(body.msg).to.equal('Bad request')
       })
     });
-    it.only('404 - article_id not found: Responds with status 404 when given article Id number that doesnt exist', () => {
+    it('404 - article_id not found: Responds with status 404 when given article Id number that doesnt exist', () => {
       return request.get('/api/articles/99999').expect(404).then(({
         body
       }) => {
         expect(body.msg).to.equal('article_id does not exist')
       })
     });
-    it.only('400 - PATCH - BAD REQUEST: Responds with status 400 when patch request doesnt have an inc_votes value', () => {
+    it('400 - PATCH - BAD REQUEST: Responds with status 400 when patch request doesnt have an inc_votes value', () => {
       return request
         .patch('/api/articles/5')
         .send({
@@ -379,5 +379,73 @@ describe('/', () => {
         })
     });
 
+  });
+  describe('/comments/:comment_id ', () => {
+    it('PATCH status:200 - allows votes update on comment_id', () => {
+      return request
+        .patch("/api/comments/5")
+        .send({
+          inc_votes: 1
+        })
+        .expect(200)
+        .then(({
+          body
+        }) => {
+          expect(body).to.eql({
+            comment_id: 5,
+            author: 'icellusedkars',
+            article_id: 1,
+            votes: 1,
+            created_at: '2013-11-23T12:36:03.389Z',
+            body: 'I hate streaming noses'
+          })
+        }).then(() => {
+          return request
+            .patch("/api/comments/5")
+            .send({
+              inc_votes: -1
+            })
+            .expect(200)
+            .then(({
+              body
+            }) => {
+              expect(body).to.eql({
+                comment_id: 5,
+                author: 'icellusedkars',
+                article_id: 1,
+                votes: 0,
+                created_at: '2013-11-23T12:36:03.389Z',
+                body: 'I hate streaming noses'
+              })
+
+            })
+        })
+    });
+    it('DELETE status:204 - allows comment to be removed ', () => {
+      return request
+        .delete("/api/comments/5")
+        .expect(204)
+        .then(({
+          body
+        }) => {
+          expect(body).to.eql({})
+        })
+    });
+  });
+  describe('/api/users/:username', () => {
+    it('GET status:200 - responds with user info for given username', () => {
+      return request
+        .get("/api/users/icellusedkars")
+        .expect(200)
+        .then(({
+          body
+        }) => {
+          expect(body).to.eql({
+            username: 'icellusedkars',
+            avatar_url: 'https://avatars2.githubusercontent.com/u/24604688?s=460&v=4',
+            name: 'sam'
+          })
+        })
+    });
   });
 });

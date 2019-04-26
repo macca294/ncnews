@@ -8,10 +8,7 @@ const {
 
 
 exports.getAllArticles = (req, res, next) => {
-    if ((req.query.order && req.query.order !== 'asc') || (req.query.order && req.query.order !== 'desc')) next({
-        code: 400
-    })
-    else selectAllArticles(req.query)
+    selectAllArticles(req.query)
         .then((
             articles
         ) => {
@@ -52,11 +49,8 @@ exports.patchArticlesById = (req, res, next) => {
     const {
         id
     } = req.params;
-    if (!req.body.inc_votes) next({
-        code: 404,
-        msg: "Bad request"
-    })
-    else updateArticlesById(req.body, id)
+
+    updateArticlesById(req.body, id)
         .then((article) => {
             res.status(200).send({
 

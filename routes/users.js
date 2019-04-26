@@ -1,9 +1,9 @@
 const usersRouter = require("express").Router();
 const {
-    getUser
+    getUserByUsername
 } = require("../controllers/users");
 
-topicsRouter.route("/:id")
-    .get(getUser);
+usersRouter.route("/:username")
+    .get(getUserByUsername);
 
 module.exports = usersRouter;
