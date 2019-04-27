@@ -29,6 +29,7 @@ exports.selectArticlesById = article_id => {
 
 exports.updateArticlesById = (update, id) => {
     const increment = Object.values(update)[0]
+
     return connection("articles")
         .where("articles.article_id", "=", id)
         .increment('votes', increment)

@@ -8,6 +8,7 @@ const {
 
 
 exports.getAllArticles = (req, res, next) => {
+    if (req.query.order && req.query.order !== 'asc') req.query.order = 'desc'
     selectAllArticles(req.query)
         .then((
             articles
@@ -63,6 +64,7 @@ exports.getCommentsByArticleId = (req, res, next) => {
     const {
         id
     } = req.params;
+    if (req.query.order && req.query.order !== 'asc') req.query.order = 'desc'
 
     selectCommentsByArticleId(id, req.query)
         .then(([...comments]) => {

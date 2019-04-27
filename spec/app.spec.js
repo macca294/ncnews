@@ -45,7 +45,6 @@ describe.only('/', () => {
           });
         });
     });
-
   });
   describe('/api/articles', () => {
     it('GET status:200,  returns array of article objects ', () => {
@@ -341,11 +340,13 @@ describe.only('/', () => {
         expect(body.msg).to.equal('Bad query')
       })
     });
-    it('400 - BAD REQUEST: Responds with status 400 when given an invalid order input', () => {
-      return request.get('/api/articles?order=banana').expect(400).then(({
+    it('200 - Responds with status 200 and defaults to "desc" when given an invalid order input', () => {
+      return request.get('/api/articles?order=banana').expect(200).then(({
         body
       }) => {
-        expect(body.msg).to.equal('Bad request')
+        expect(body.articles).to.be.sortedBy('created_at', {
+          descending: true
+        })
       })
     });
     it('400 - BAD REQUEST: Responds with status 400 when given an invalid article Id', () => {

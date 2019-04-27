@@ -1,10 +1,10 @@
-exports.routeNotFound = (err, req, res, next) => {
+exports.routeNotFound = (req, res, next) => {
   res.status(404).send({
     msg: 'Route Not Found'
   });
 };
 
-exports.methodNotAllowed = (err, req, res, next) => {
+exports.methodNotAllowed = (req, res, next) => {
   res.status(405).send({
     msg: 'Method Not Allowed'
   });
