@@ -51,6 +51,15 @@ exports.patchArticlesById = (req, res, next) => {
         id
     } = req.params;
 
+    if (Object.keys(req.body).length === 0) req.body = {
+        inc_votes: 0
+    }
+    if (typeof req.body.inc_votes !== 'number') next({
+        code: 400
+    })
+
+
+
     updateArticlesById(req.body, id)
         .then(([article]) => {
             res.status(200).send({
@@ -66,12 +75,20 @@ exports.getCommentsByArticleId = (req, res, next) => {
     } = req.params;
     if (req.query.order && req.query.order !== 'asc') req.query.order = 'desc'
 
-    selectCommentsByArticleId(id, req.query)
-        .then(([...comments]) => {
-            res.status(200).send({
-                'comments': [...comments]
-            })
-        }).catch(next);
+    selectArticlesById(id)
+        .then(([article]) => {
+            if (article === undefined)
+                return Promise.reject({
+                    code: 404,
+                    msg: 'article_id does not exist'
+                });
+            selectCommentsByArticleId(id, req.query)
+                .then(([...comments]) => {
+                    res.status(200).send({
+                        'comments': [...comments]
+                    })
+                }).catch(next)
+        }).catch(next)
 
 
 }

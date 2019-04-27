@@ -334,7 +334,7 @@ describe.only('/', () => {
         })
     });
     it('400 - BAD REQUEST: Responds with status 400 when given an invalid column to sort_by', () => {
-      return request.get('/api/articles?sort_by=banana').expect(400).then(({
+      return request.get('/api/articles?sort_by=ban_a_na').expect(400).then(({
         body
       }) => {
         expect(body.msg).to.equal('Bad query')
@@ -363,86 +363,127 @@ describe.only('/', () => {
         expect(body.msg).to.equal('article_id does not exist')
       })
     });
-    it('400 - PATCH - BAD REQUEST: Responds with status 400 when patch request doesnt have an inc_votes value', () => {
+    it('400 - PATCH - BAD REQUEST: Responds with status 400 when patch request has an invalid inc_votes', () => {
       return request
         .patch('/api/articles/5')
         .send({
-          banana: 1
+          inc_votes: 'abc'
         })
-        .expect(404).then(({
+        .expect(400).then(({
           body
         }) => {
           expect(body.msg).to.equal('Bad request')
         })
     });
-
-  });
-  describe('/comments/:comment_id ', () => {
-    it('PATCH status:200 - allows votes update on comment_id', () => {
+    it('200 - PATCH - : Responds with unaffected object when request body empty setting inc_votes to 0', () => {
       return request
-        .patch("/api/comments/5")
-        .send({
-          inc_votes: 1
-        })
+        .patch('/api/articles/5')
+        .send({})
         .expect(200)
         .then(({
           body
         }) => {
-          expect(body.comment).to.eql({
-            comment_id: 5,
-            author: 'icellusedkars',
-            article_id: 1,
-            votes: 1,
-            created_at: '2013-11-23T12:36:03.389Z',
-            body: 'I hate streaming noses'
+          expect(body).to.eql({
+            article: {
+              article_id: 5,
+              title: 'UNCOVERED: catspiracy to bring down democracy',
+              body: 'Bastet walks amongst us, and the cats are taking arms!',
+              votes: 0,
+              topic: 'cats',
+              author: 'rogersop',
+              created_at: '2002-11-19T12:21:54.171Z'
+            }
           })
-        }).then(() => {
-          return request
-            .patch("/api/comments/5")
-            .send({
-              inc_votes: -1
-            })
-            .expect(200)
-            .then(({
-              body
-            }) => {
-              expect(body.comment).to.eql({
-                comment_id: 5,
-                author: 'icellusedkars',
-                article_id: 1,
-                votes: 0,
-                created_at: '2013-11-23T12:36:03.389Z',
-                body: 'I hate streaming noses'
-              })
-
-            })
-        })
-    });
-    it('DELETE status:204 - allows comment to be removed ', () => {
-      return request
-        .delete("/api/comments/5")
-        .expect(204)
-        .then(({
-          body
-        }) => {
-          expect(body).to.eql({})
         })
     });
   });
-  describe('/api/users/:username', () => {
-    it('GET status:200 - responds with user info for given username', () => {
-      return request
-        .get("/api/users/icellusedkars")
-        .expect(200)
-        .then(({
-          body
-        }) => {
-          expect(body.user).to.eql({
-            username: 'icellusedkars',
-            avatar_url: 'https://avatars2.githubusercontent.com/u/24604688?s=460&v=4',
-            name: 'sam'
-          })
+  it('404 - Not Found - responds with not found when looking for comments on article ID that doesnt exist ', () => {
+    return request
+      .get('/api/articles/1000/comments')
+      .expect(404)
+      .then(({
+        body
+      }) => {
+        expect(body.msg).to.equal('article_id does not exist')
+      })
+  });
+  it(' Responds with status 400 when given an invalid column to sort_by', () => {
+    return request.get('/api/articles/5/comments?sort_by=ap_pl_e')
+      .expect(400)
+      .then(({
+        body
+      }) => {
+        expect(body.msg).to.equal('Bad query')
+      })
+
+  });
+
+});
+describe('/comments/:comment_id ', () => {
+  it('PATCH status:200 - allows votes update on comment_id', () => {
+    return request
+      .patch("/api/comments/5")
+      .send({
+        inc_votes: 1
+      })
+      .expect(200)
+      .then(({
+        body
+      }) => {
+        expect(body.comment).to.eql({
+          comment_id: 5,
+          author: 'icellusedkars',
+          article_id: 1,
+          votes: 1,
+          created_at: '2013-11-23T12:36:03.389Z',
+          body: 'I hate streaming noses'
         })
-    });
+      }).then(() => {
+        return request
+          .patch("/api/comments/5")
+          .send({
+            inc_votes: -1
+          })
+          .expect(200)
+          .then(({
+            body
+          }) => {
+            expect(body.comment).to.eql({
+              comment_id: 5,
+              author: 'icellusedkars',
+              article_id: 1,
+              votes: 0,
+              created_at: '2013-11-23T12:36:03.389Z',
+              body: 'I hate streaming noses'
+            })
+
+          })
+      })
+  });
+  it('DELETE status:204 - allows comment to be removed ', () => {
+    return request
+      .delete("/api/comments/5")
+      .expect(204)
+      .then(({
+        body
+      }) => {
+        expect(body).to.eql({})
+      })
+  });
+});
+describe('/api/users/:username', () => {
+  it('GET status:200 - responds with user info for given username', () => {
+    return request
+      .get("/api/users/icellusedkars")
+      .expect(100)
+      .then(({
+        body
+      }) => {
+        expect(body.user).to.eql({
+          username: 'icellusedkars',
+          avatar_url: 'https://avatars2.githubusercontent.com/u/24604688?s=460&v=4',
+          name: 'sam'
+        })
+      })
   });
 });

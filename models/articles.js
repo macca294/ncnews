@@ -46,6 +46,8 @@ exports.selectCommentsByArticleId = (id, {
         .where("comments.article_id", "=", id)
         .returning('*')
         .orderBy(sort_by, order)
+        
+
 
 }
 

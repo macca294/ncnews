@@ -11,7 +11,7 @@ exports.methodNotAllowed = (req, res, next) => {
 };
 
 exports.handle400 = (err, req, res, next) => {
-
+  // console.log(err)
   const codes = {
     '42703': 'Bad query',
     400: 'Bad request',
