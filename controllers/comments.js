@@ -8,7 +8,7 @@ exports.patchCommentsByCommentId = (req, res, next) => {
     const {
         comment_id
     } = req.params
-
+    
     if (Object.keys(req.body).length === 0) {
         req.body = {
             'inc_votes': 0

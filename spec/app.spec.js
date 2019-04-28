@@ -587,14 +587,14 @@ describe.only('/', () => {
           expect(body.msg).to.eql('Bad Request')
         })
     });
-    it('404 - GET - /users - responds Bad Request if invalid comment_id', () => {
+    it('404 - GET - /users - responds Not Found if user doesnt exist', () => {
       return request
-        .delete("/api/comments/a_b_c")
-        .expect(400)
+        .get("/api/users/a_b_c")
+        .expect(404)
         .then(({
           body
         }) => {
-          expect(body.msg).to.eql('Bad Request')
+          expect(body.msg).to.eql('Not Found')
         })
     });
   });

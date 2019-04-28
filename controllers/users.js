@@ -10,8 +10,10 @@ exports.getUserByUsername = (req, res, next) => {
 
     selectUserByUsername(username)
         .then(([user]) => {
-
-            res.status(200)
+            if (!user) next({
+                code: 404
+            })
+            else res.status(200)
                 .send({
                     'user': user
                 })
