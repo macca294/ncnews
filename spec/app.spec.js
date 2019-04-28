@@ -356,7 +356,7 @@ describe.only('/', () => {
         expect(body.msg).to.equal('Bad Request')
       })
     });
-    it('404 - article_id not found: Responds with status 404 when given article Id number that doesnt exist', () => {
+    it('404 - article_id not found: Response when given article Id number that doesnt exist', () => {
       return request.get('/api/articles/99999').expect(404).then(({
         body
       }) => {
@@ -443,89 +443,159 @@ describe.only('/', () => {
       }) => {
         expect(body.msg).to.eql('Not Found')
       })
+
   });
-  it('405 - Method Not Allowed -  if method is incorrect for endpoint', () => {
-    const endpoints = ['/api', '/api/topics', '/api/articles/3/comments', '/api/comments/2']
-    const testPoints = endpoints.map(endpoint => {
-      if (
-        request.post(endpoint).send({}).then(({
+
+  describe('/comments/:comment_id ', () => {
+    it('PATCH status:200 - allows votes update on comment_id', () => {
+      return request
+        .patch("/api/comments/5")
+        .send({
+          inc_votes: 1
+        })
+        .expect(200)
+        .then(({
           body
         }) => {
-          expect(body.msg).to.eql('Method Not Allowed')
-
-        }) === true) return true
-
-      return false
-    })
-    console.log(testPoints)
-
-  });
-});
-describe('/comments/:comment_id ', () => {
-  it('PATCH status:200 - allows votes update on comment_id', () => {
-    return request
-      .patch("/api/comments/5")
-      .send({
-        inc_votes: 1
-      })
-      .expect(200)
-      .then(({
-        body
-      }) => {
-        expect(body.comment).to.eql({
-          comment_id: 5,
-          author: 'icellusedkars',
-          article_id: 1,
-          votes: 1,
-          created_at: '2013-11-23T12:36:03.389Z',
-          body: 'I hate streaming noses'
-        })
-      }).then(() => {
-        return request
-          .patch("/api/comments/5")
-          .send({
-            inc_votes: -1
+          expect(body.comment).to.eql({
+            comment_id: 5,
+            author: 'icellusedkars',
+            article_id: 1,
+            votes: 1,
+            created_at: '2013-11-23T12:36:03.389Z',
+            body: 'I hate streaming noses'
           })
-          .expect(200)
-          .then(({
-            body
-          }) => {
-            expect(body.comment).to.eql({
-              comment_id: 5,
-              author: 'icellusedkars',
-              article_id: 1,
-              votes: 0,
-              created_at: '2013-11-23T12:36:03.389Z',
-              body: 'I hate streaming noses'
+        }).then(() => {
+          return request
+            .patch("/api/comments/5")
+            .send({
+              inc_votes: -1
             })
+            .expect(200)
+            .then(({
+              body
+            }) => {
+              expect(body.comment).to.eql({
+                comment_id: 5,
+                author: 'icellusedkars',
+                article_id: 1,
+                votes: 0,
+                created_at: '2013-11-23T12:36:03.389Z',
+                body: 'I hate streaming noses'
+              })
 
-          })
-      })
-  });
-  it('DELETE status:204 - allows comment to be removed ', () => {
-    return request
-      .delete("/api/comments/5")
-      .expect(204)
-      .then(({
-        body
-      }) => {
-        expect(body).to.eql({})
-      })
-  });
-});
-describe('/api/users/:username', () => {
-  it('GET status:200 - responds with user info for given username', () => {
-    return request
-      .get("/api/users/icellusedkars")
-      .expect(100)
-      .then(({
-        body
-      }) => {
-        expect(body.user).to.eql({
-          username: 'icellusedkars',
-          avatar_url: 'https://avatars2.githubusercontent.com/u/24604688?s=460&v=4',
-          name: 'sam'
+            })
         })
-      })
+    });
+    it('DELETE status:204 - allows comment to be removed ', () => {
+      return request
+        .delete("/api/comments/5")
+        .expect(204)
+        .then(({
+          body
+        }) => {
+          expect(body).to.eql({})
+        })
+    });
+  });
+
+  describe('/api/users/:username', () => {
+    it('GET status:200 - responds with user info for given username', () => {
+      return request
+        .get("/api/users/icellusedkars")
+        .expect(200)
+        .then(({
+          body
+        }) => {
+          expect(body.user).to.eql({
+            username: 'icellusedkars',
+            avatar_url: 'https://avatars2.githubusercontent.com/u/24604688?s=460&v=4',
+            name: 'sam'
+          })
+        })
+    });
+  });
+  describe('/comments errors', () => {
+    it('200 - PATCH -  responds with unchanged object when empty body sent', () => {
+      return request
+        .patch("/api/comments/1")
+        .send({})
+        .expect(200)
+        .then(({
+          body
+        }) => {
+          expect(body.comment.votes).to.eql(16)
+        })
+    });
+    it('404 - PATCH -  responds Not Found if valid comment_id but doesnt exist', () => {
+      return request
+        .patch("/api/comments/1000")
+        .send({
+          inc_votes: 1
+        })
+        .expect(404)
+        .then(({
+          body
+        }) => {
+          expect(body.msg).to.eql('Not Found')
+        })
+
+    });
+    it('404 - DELETE -  responds Not Found if valid comment_id but doesnt exist', () => {
+      return request
+        .delete("/api/comments/1000")
+        .expect(404)
+        .then(({
+          body
+        }) => {
+          expect(body.msg).to.eql('Not Found')
+        })
+    });
+    it('400 - DELETE -  responds Bad Request if invalid comment_id', () => {
+      return request
+        .delete("/api/comments/a_b_c")
+        .expect(400)
+        .then(({
+          body
+        }) => {
+          expect(body.msg).to.eql('Bad Request')
+        })
+    });
+    it('400 - PATCH - responds Bad Request if not a valid Id ', () => {
+      return request
+        .patch("/api/comments/a_b_c")
+        .send({
+          inc_votes: 1
+        })
+        .expect(400)
+        .then(({
+          body
+        }) => {
+          expect(body.msg).to.eql('Bad Request')
+        })
+    });
+    it('400 - PATCH - responds Bad Request if not a valid inc_votes value ', () => {
+      return request
+        .patch("/api/comments/1")
+        .send({
+          inc_votes: "a"
+        })
+        .expect(400)
+        .then(({
+          body
+        }) => {
+          expect(body.msg).to.eql('Bad Request')
+        })
+    });
+    it('404 - GET - /users - responds Bad Request if invalid comment_id', () => {
+      return request
+        .delete("/api/comments/a_b_c")
+        .expect(400)
+        .then(({
+          body
+        }) => {
+          expect(body.msg).to.eql('Bad Request')
+        })
+    });
   });
 });

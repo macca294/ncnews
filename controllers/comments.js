@@ -9,9 +9,18 @@ exports.patchCommentsByCommentId = (req, res, next) => {
         comment_id
     } = req.params
 
+    if (Object.keys(req.body).length === 0) {
+        req.body = {
+            'inc_votes': 0
+        }
+    }
+
     updateCommentsByCommentId(req.body, comment_id)
         .then(([comment]) => {
-            res.status(200)
+            if (!comment) next({
+                code: 404
+            })
+            else res.status(200)
                 .send({
                     comment: comment
                 })
