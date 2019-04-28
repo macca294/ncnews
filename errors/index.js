@@ -13,9 +13,11 @@ exports.methodNotAllowed = (req, res, next) => {
 exports.handle400 = (err, req, res, next) => {
   // console.log(err)
   const codes = {
-    '42703': 'Bad query',
-    400: 'Bad request',
-    '22P02': 'Bad request'
+    '42703': 'Bad Query',
+    400: 'Bad Request',
+    '22P02': 'Bad Request',
+
+
   }
   if (codes[err.code]) res.status(400).send({
     msg: codes[err.code]
@@ -24,9 +26,12 @@ exports.handle400 = (err, req, res, next) => {
 }
 
 exports.handle404 = (err, req, res, next) => {
-
-  if (err.code === 404) res.status(404).send({
-    msg: err.msg || 'Not Found'
+  const codes = {
+    '23503': 'Not Found',
+    404: 'Not Found'
+  }
+  if (codes[err.code]) res.status(404).send({
+    msg: codes[err.code]
   })
   else next(err)
 }

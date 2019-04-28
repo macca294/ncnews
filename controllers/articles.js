@@ -3,9 +3,12 @@ const {
     selectArticlesById,
     updateArticlesById,
     selectCommentsByArticleId,
-    insertCommentByArticleId
-} = require('../models/articles')
+    insertCommentByArticleId,
 
+} = require('../models/articles')
+const {
+    selectUserByUsername
+} = require('../models/users')
 
 exports.getAllArticles = (req, res, next) => {
     if (req.query.order && req.query.order !== 'asc') req.query.order = 'desc'
@@ -97,6 +100,10 @@ exports.postCommentByArticleId = (req, res, next) => {
     const {
         id
     } = req.params
+
+    if (!req.body.username || !req.body.body) next({
+        code: 400
+    })
 
     insertCommentByArticleId(req.body, id)
         .then(([comment]) => {

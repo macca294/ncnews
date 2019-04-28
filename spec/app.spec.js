@@ -330,14 +330,14 @@ describe.only('/', () => {
         .get("/api/articles?author=banana")
         .expect(404)
         .then(res => {
-          expect(res.body.msg).that.equal('Article not found')
+          expect(res.body.msg).that.equal('Not Found')
         })
     });
     it('400 - BAD REQUEST: Responds with status 400 when given an invalid column to sort_by', () => {
       return request.get('/api/articles?sort_by=ban_a_na').expect(400).then(({
         body
       }) => {
-        expect(body.msg).to.equal('Bad query')
+        expect(body.msg).to.equal('Bad Query')
       })
     });
     it('200 - Responds with status 200 and defaults to "desc" when given an invalid order input', () => {
@@ -353,14 +353,14 @@ describe.only('/', () => {
       return request.get('/api/articles/banana').expect(400).then(({
         body
       }) => {
-        expect(body.msg).to.equal('Bad request')
+        expect(body.msg).to.equal('Bad Request')
       })
     });
     it('404 - article_id not found: Responds with status 404 when given article Id number that doesnt exist', () => {
       return request.get('/api/articles/99999').expect(404).then(({
         body
       }) => {
-        expect(body.msg).to.equal('article_id does not exist')
+        expect(body.msg).to.equal('Not Found')
       })
     });
     it('400 - PATCH - BAD REQUEST: Responds with status 400 when patch request has an invalid inc_votes', () => {
@@ -372,7 +372,7 @@ describe.only('/', () => {
         .expect(400).then(({
           body
         }) => {
-          expect(body.msg).to.equal('Bad request')
+          expect(body.msg).to.equal('Bad Request')
         })
     });
     it('200 - PATCH - : Responds with unaffected object when request body empty setting inc_votes to 0', () => {
@@ -404,20 +404,62 @@ describe.only('/', () => {
       .then(({
         body
       }) => {
-        expect(body.msg).to.equal('article_id does not exist')
+        expect(body.msg).to.equal('Not Found')
       })
   });
-  it(' Responds with status 400 when given an invalid column to sort_by', () => {
+  it('400 -  Responds with status 400 when given an invalid column to sort_by', () => {
     return request.get('/api/articles/5/comments?sort_by=ap_pl_e')
       .expect(400)
       .then(({
         body
       }) => {
-        expect(body.msg).to.equal('Bad query')
+        expect(body.msg).to.equal('Bad Query')
       })
 
   });
+  it('400 - Bad request - POST - responds 400 if comment doesnt include correct keys', () => {
+    return request
+      .post('/api/articles/1/comments')
+      .send({
+        'abc': 'def'
+      })
+      .expect(400)
+      .then(({
+        body
+      }) => {
+        expect(body.msg).to.eql('Bad Request')
+      })
+  });
+  it('404 - user not found - POST - response if comment post doesnt include a known username', () => {
+    return request
+      .post('/api/articles/1/comments')
+      .send({
+        'username': 'def',
+        'body': 'abc'
+      })
+      .expect(404)
+      .then(({
+        body
+      }) => {
+        expect(body.msg).to.eql('Not Found')
+      })
+  });
+  it('405 - Method Not Allowed -  if method is incorrect for endpoint', () => {
+    const endpoints = ['/api', '/api/topics', '/api/articles/3/comments', '/api/comments/2']
+    const testPoints = endpoints.map(endpoint => {
+      if (
+        request.post(endpoint).send({}).then(({
+          body
+        }) => {
+          expect(body.msg).to.eql('Method Not Allowed')
 
+        }) === true) return true
+
+      return false
+    })
+    console.log(testPoints)
+
+  });
 });
 describe('/comments/:comment_id ', () => {
   it('PATCH status:200 - allows votes update on comment_id', () => {
