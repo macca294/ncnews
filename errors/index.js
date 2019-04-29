@@ -27,6 +27,7 @@ exports.handle400 = (err, req, res, next) => {
 
 exports.handle404 = (err, req, res, next) => {
   const codes = {
+    '23502': 'Not Found',
     '23503': 'Not Found',
     404: 'Not Found'
   }
@@ -37,7 +38,7 @@ exports.handle404 = (err, req, res, next) => {
 }
 
 exports.handle500 = (err, req, res, next) => {
-  //console.log(err)
+
   res.status(500).send({
     msg: 'Internal Server Error'
   });

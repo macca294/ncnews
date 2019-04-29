@@ -19,3 +19,10 @@ exports.deleteCommentsByCommentId = (id) => {
         .then(body => body)
 
 }
+
+exports.selectCommentByCommentId = (id) => {
+    return connection("comments")
+        .where("comments.comment_id", "=", id)
+        .returning("*")
+        .then(body => body)
+}
