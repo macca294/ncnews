@@ -6,8 +6,10 @@ const {
     handle404,
     handle500
 } = require('./errors');
-
+const cors = require('cors')
 const app = express();
+
+app.use(cors())
 
 app.use(express.json());
 
