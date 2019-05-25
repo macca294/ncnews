@@ -38,7 +38,6 @@ exports.handle404 = (err, req, res, next) => {
 }
 
 exports.handle500 = (err, req, res, next) => {
-
   res.status(500).send({
     msg: 'Internal Server Error'
   });

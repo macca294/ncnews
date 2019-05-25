@@ -4,6 +4,7 @@ const {
     updateArticlesById,
     selectCommentsByArticleId,
     insertCommentByArticleId,
+    insertArticle
 
 } = require('../models/articles')
 const {
@@ -42,6 +43,16 @@ exports.getArticlesById = (req, res, next) => {
                     code: 404,
                     msg: 'article_id does not exist'
                 });
+            res.status(200).send({
+                'article': article
+            })
+        }).catch(next);
+
+}
+
+exports.postArticle = (req, res, next) => {
+    insertArticle(req.body)
+        .then(([article]) => {
             res.status(200).send({
                 'article': article
             })

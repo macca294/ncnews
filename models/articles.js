@@ -27,6 +27,20 @@ exports.selectArticlesById = article_id => {
 
 }
 
+exports.insertArticle = (article) => {
+    const formattedArticle = {}
+    formattedArticle.author = article.username,
+    formattedArticle.body = article.body,
+    formattedArticle.title = article.title,
+    formattedArticle.topic = article.topic
+
+    return connection("articles")
+        .insert(formattedArticle)
+        .returning('*')
+        .then(article => article)
+
+}
+
 exports.updateArticlesById = (update, id) => {
     const increment = Object.values(update)[0]
 
@@ -46,7 +60,7 @@ exports.selectCommentsByArticleId = (id, {
         .where("comments.article_id", "=", id)
         .returning('*')
         .orderBy(sort_by, order)
-        
+
 
 
 }

@@ -15,7 +15,7 @@ use(chaiSorted);
 beforeEach(() => connection.seed.run());
 after(() => connection.destroy());
 
-describe.only('/', () => {
+describe('/', () => {
   describe('/api', () => {
     it('GET status:200', () => {
       return request
@@ -196,6 +196,31 @@ describe.only('/', () => {
                   created_at: '1974-11-26T12:21:54.171Z'
                 }))
           })
+      });
+    });
+    describe('/api/articles', () => {
+      it('POST status:200, allows post of new article', () => {
+        return request
+          .post("/api/articles")
+          .send({
+            title: 'test',
+            topic: 'mitch',
+            username: 'butter_bridge',
+            body: 'test article'
+          })
+          .expect(200)
+          .then((({
+            body
+          }) => {
+            expect(body.article).to.include({
+              title: 'test',
+              topic: 'mitch',
+              author: 'butter_bridge',
+              votes: 0,
+              body: 'test article',
+              article_id: 13
+            })
+          }))
       });
     });
 
